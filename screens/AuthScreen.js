@@ -19,7 +19,7 @@
  */
 
 import React from 'react';
-import { View } from 'react-native';
+import { Alert } from 'react-native';
 import { AuthSession, SecureStore } from 'expo';
 import ApiServer from '../lib/ApiServer';
 import Config from '../constants/ApiServer';
@@ -43,32 +43,34 @@ export default class AuthScreen extends React.Component {
         return null;
     }
 
-    _authenticate = async () => {
-        let redirectUrl = AuthSession.getRedirectUrl();
-        let result = await AuthSession.startAsync({
-            authUrl: ApiServer._getServerUrl('/auth')
-                .query({
-                    client_id: Config.clientId,
-                    redirect_uri: redirectUrl,
-                })
-        });
-
-        switch (result.type) {
-            case 'success':
-                this.setState({
-                    authenticated: true,
-                });
-
-                await SecureStore.setItemAsync('auth_token', result.params.token);
-                this.props.navigation.navigate('App');
-                break;
-            case 'error':
+    _authenticate = () => {
+        ApiServer.isAuthenticated()
+            .then(response => {
+                if (response) {
+                    this.props.navigation.navigate('App');
+                }
+            });
+        ApiServer.authenticate()
+            .then(response => {
+                if (response) {
+                    this.props.navigation.navigate('App');
+                } else {
+                    this.setState({
+                        authenticated: false,
+                    });
+                    Alert.alert('Authentication Error', 'You must authenticate before you can use the functionalities of this app.', [
+                        { text: 'OK', onPress: () => { this._authenticate() } }
+                    ], { cancelable: false });
+                }
+            })
+            .catch(error => {
                 this.setState({
                     authenticated: false,
-                    error: result.params.error,
+                    error: error,
                 });
-                this.props.navigation.navigate('Error', { error: this.state.error });
-                break;
-        }
+                Alert.alert('Authentication Error', 'Unable to authenticate with remote server: ' + this.state.error.message, [
+                    { text: 'OK', onPress: () => { this._authenticate() } }
+                ], { cancelable: false });
+            });
     };
 }

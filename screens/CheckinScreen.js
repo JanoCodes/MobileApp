@@ -19,13 +19,28 @@
  */
 
 import React from 'react';
-import { View, StyleSheet, Button } from 'react-native';
+import { View, StyleSheet, Button, Alert } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import LocalDatabase from '../lib/LocalDatabase';
 
 class CheckinScreen extends React.Component {
+    database = null;
+
     static navigationOptions = {
         title: 'Guest Check-in',
     };
+
+    componentWillMount() {
+        const parent = this;
+
+        this.database = new LocalDatabase();
+        this.database.initDatabase()
+            .error(() => {
+                Alert.alert('Application Error', 'Failed to set up local database.', [
+                    { text: 'OK', onPress: () => { parent.props.navigation.navigate('Error') } }
+                ], { cancelable: false });
+            });
+    }
 
     render() {
         return (
