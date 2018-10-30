@@ -28,6 +28,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-navigation';
 import { WebBrowser } from 'expo';
 
 export default class HomeScreen extends React.Component {
@@ -37,7 +38,7 @@ export default class HomeScreen extends React.Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
                     <View style={styles.welcomeContainer}>
                         <Image
@@ -61,7 +62,7 @@ export default class HomeScreen extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
-            </View>
+            </SafeAreaView>
         );
     }
 

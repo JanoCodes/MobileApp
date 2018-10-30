@@ -19,41 +19,18 @@
  */
 
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Colors from '../constants/Colors';
+import { Platform, ProgressViewIOS, ProgressBarAndroid } from 'react-native';
 
-export default class ErrorScreen extends React.Component {
-    static navigationOptions = {
-        title: 'Error',
-    };
-
+export default class ProgressBar extends React.Component {
     render() {
-        return (
-            <View style={ styles.container }>
-                <View style={ styles.errorContainer }>
-                    <Text style={ styles.errorText }>{ this.props.error }</Text>
-                </View>
-            </View>
-        )
+        if (Platform.OS === 'ios') {
+            return (
+                <ProgressViewIOS progress={ this.props.progress } />
+            )
+        } else {
+            return (
+                <ProgressBarAndroid progress={ this.props.progress } />
+            )
+        }
     }
 }
-
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-    contentContainer: {
-        paddingTop: 30,
-    },
-    errorContainer: {
-        alignItems: 'center',
-        marginTop: 10,
-        marginBottom: 20,
-        backgroundColor: Colors.errorBackground,
-    },
-    errorText: {
-        color: Colors.errorText,
-    }
-});

@@ -20,7 +20,8 @@
 
 import React from 'react';
 import { withNavigation } from 'react-navigation';
-import { Asset, Font, Icon, SecureStore, SplashScreen } from 'expo';
+import { Asset, Font, Icon, SplashScreen } from 'expo';
+import ApiServer from '../lib/ApiServer';
 
 class LoadingScreen extends React.Component {
     state = {
@@ -45,26 +46,17 @@ class LoadingScreen extends React.Component {
     };
 
     _loadAuthAsync = new Promise((resolve, reject) => {
-        let parent = this;
+        SplashScreen.hide();
 
-        SecureStore.getItemAsync('auth_token')
-            .then(value => {
-                this.setState({ isLoadingComplete: true });
+        ApiServer.isAuthenticated()
+            .then(authenticated => {
                 SplashScreen.hide();
 
-                if (value === null) {
-                    parent.props.navigation.navigate('Main');
+                if (authenticated) {
+                    this.props.navigation.navigate('Main');
                 } else {
-                    parent.props.navigation.navigate('Main');
+                    this.props.navigation.navigate('Auth');
                 }
-
-                resolve();
-            })
-            .catch(error => {
-                this.setState({ isLoadingComplete: true });
-                SplashScreen.hide();
-
-                reject('Unable to access secure store: ' + error);
             });
     });
 

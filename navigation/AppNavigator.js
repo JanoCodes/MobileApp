@@ -23,7 +23,6 @@ import LoadingScreen from '../screens/LoadingScreen';
 import MainTabNavigator from './MainTabNavigator';
 import ErrorScreen from '../screens/ErrorScreen';
 import AuthScreen from '../screens/AuthScreen';
-import ScannerModal from '../screens/ScannerModal';
 
 const AuthStack = createStackNavigator({ Signin: AuthScreen });
 
@@ -31,7 +30,6 @@ export default createSwitchNavigator({
     Loading: LoadingScreen,
     Auth: AuthStack,
     Main: MainTabNavigator,
-    Scanner: ScannerModal,
     Error: ErrorScreen,
 }, {
     initialRouteName: 'Loading'

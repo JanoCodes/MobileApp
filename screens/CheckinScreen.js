@@ -22,6 +22,7 @@ import React from 'react';
 import { View, StyleSheet, Button, Alert } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import LocalDatabase from '../lib/LocalDatabase';
+import AttendeesList from '../components/AttendeesList';
 
 class CheckinScreen extends React.Component {
     database = null;
@@ -33,9 +34,13 @@ class CheckinScreen extends React.Component {
     componentWillMount() {
         const parent = this;
 
-        this.database = new LocalDatabase();
-        this.database.initDatabase()
-            .error(() => {
+        let database = new LocalDatabase();
+        database.initDatabase()
+            .then(() => {
+                console.log('Successfully connected to local database.');
+            }, error => {
+                console.error('Unable to set up local database: ' + error.message);
+
                 Alert.alert('Application Error', 'Failed to set up local database.', [
                     { text: 'OK', onPress: () => { parent.props.navigation.navigate('Error') } }
                 ], { cancelable: false });
@@ -45,7 +50,8 @@ class CheckinScreen extends React.Component {
     render() {
         return (
             <View style={ styles.container }>
-                <Button onPress={ this._openScanner } title="Scan Ticket" />
+                <Button style={ styles.scanButton } onPress={ this._openScanner } title="Scan Ticket" />
+                <AttendeesList />
             </View>
         );
     }
@@ -61,6 +67,9 @@ const styles = StyleSheet.create({
         paddingTop: 15,
         backgroundColor: '#fff',
     },
+    scanButton: {
+        height: 60,
+    }
 });
 
 export default withNavigation(CheckinScreen)

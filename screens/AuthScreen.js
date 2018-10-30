@@ -44,16 +44,10 @@ export default class AuthScreen extends React.Component {
     }
 
     _authenticate = () => {
-        ApiServer.isAuthenticated()
-            .then(response => {
-                if (response) {
-                    this.props.navigation.navigate('App');
-                }
-            });
         ApiServer.authenticate()
             .then(response => {
                 if (response) {
-                    this.props.navigation.navigate('App');
+                    this.props.navigation.navigate('Main');
                 } else {
                     this.setState({
                         authenticated: false,

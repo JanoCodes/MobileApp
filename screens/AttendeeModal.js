@@ -20,40 +20,44 @@
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Colors from '../constants/Colors';
+import { SafeAreaView, withNavigation } from 'react-navigation';
 
-export default class ErrorScreen extends React.Component {
+class AttendeeModal extends React.Component {
     static navigationOptions = {
-        title: 'Error',
+        title: 'Ticket Details',
     };
 
     render() {
+        const { navigation } = this.props;
+        const attendee = navigation.getParam('attendee');
+
         return (
-            <View style={ styles.container }>
-                <View style={ styles.errorContainer }>
-                    <Text style={ styles.errorText }>{ this.props.error }</Text>
-                </View>
-            </View>
+            <SafeAreaView style={ styles.container }>
+                <Text style={ styles.attendeeName }>
+                    { attendee['Title'] + ' ' + attendee['FirstName'] + ' ' + attendee['LastName'] }
+                </Text>
+                <Text style={ styles.attendeeTicket }>{ attendee['Ticket'] }</Text>
+            </SafeAreaView>
         )
     }
 }
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingVertical: 15,
+        paddingHorizontal: 10,
         backgroundColor: '#fff',
     },
-    contentContainer: {
-        paddingTop: 30,
+    attendeeName: {
+        fontSize: 22,
     },
-    errorContainer: {
-        alignItems: 'center',
-        marginTop: 10,
-        marginBottom: 20,
-        backgroundColor: Colors.errorBackground,
+    attendeeTicket: {
+        fontSize: 18,
     },
-    errorText: {
-        color: Colors.errorText,
+    attendeeStatus: {
+        fontSize: 20,
     }
 });
+
+export default withNavigation(AttendeeModal)

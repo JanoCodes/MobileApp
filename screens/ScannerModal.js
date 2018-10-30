@@ -19,14 +19,19 @@
  */
 
 import React from 'react';
-import { Platform, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { Platform, StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Permissions, BarCodeScanner, Icon } from 'expo';
-import { withNavigation } from 'react-navigation';
+import { SafeAreaView, withNavigation } from 'react-navigation';
+import { ifIphoneX } from 'react-native-iphone-x-helper';
 import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
-import ApiServer from '../lib/ApiServer';
+import LocalDatabase from '../lib/LocalDatabase';
 
 class ScannerModal extends React.Component {
+    static navigationOptions = {
+        header: null,
+    };
+
     state = {
         hasCameraPermission: null,
     };
@@ -40,13 +45,15 @@ class ScannerModal extends React.Component {
         const { hasCameraPermission } = this.state;
 
         return (
-            <View style={ styles.container }>
+            <SafeAreaView style={ styles.container }>
+                <BarCodeScanner onBarCodeScanned={ this._handleScanned } style={ styles.fullScreen } />
                 <View style={ hasCameraPermission ? styles.infoContainer : styles.errorContainer }>
                     { hasCameraPermission ? (
                         <TouchableOpacity style={ styles.closeButton } onPress={ this._closeScanner }>
                             <Icon.Ionicons
                                 name={ Platform.OS === 'ios' ? 'ios-close-circle' : 'md-close-circle' }
-                                size={ 30 } />
+                                size={ 40 }
+                                style={ styles.closeIcon } />
                         </TouchableOpacity>
                     ) : (
                         <Text style={ styles.errorText }>
@@ -54,29 +61,52 @@ class ScannerModal extends React.Component {
                         </Text>
                     ) }
                 </View>
-                <BarCodeScanner onBarCodeScanned={ this._handleScanned } style={ styles.fullScreen } />
-            </View>
+            </SafeAreaView>
         )
     }
 
     _handleScanned = (type, data) => {
-        fetch(ApiServer._getServerUrl('attendee/' . data), {
-            headers: {
-                Accept: 'application/json',
-            },
-        });
+        let database = new LocalDatabase();
+        database.getAttendeeByUuid(data)
+            .then(response => {
+                if (response.rows.length === 0) {
+                    Alert.alert(
+                        'Ticket invalid',
+                        'The scanned QR code ' + data + ' was not associated with a valid attendee.',
+                        [
+                            { text: 'OK' }
+                        ],
+                        { cancelable: false }
+                    );
+                    return;
+                }
+
+                this.props.navigation.navigate('Attendee', { attendee: response.rows._array[0] })
+            }, error => {
+                Alert.alert(
+                    'Something went wrong',
+                    'An error occurred while attempting to validate the ticket scanned.',
+                    [
+                        { text: 'OK', onPress: () => { parent.props.navigation.navigate('Error') } }
+                    ],
+                    { cancelable: false }
+                );
+            });
     };
 
     _closeScanner = () => {
-        this.props.navigation.navigate('Main');
+        this.props.navigation.goBack();
     };
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 15,
-        backgroundColor: '#fff',
+        ...ifIphoneX({
+            paddingTop: 30,
+        }, {
+            paddingTop: 15,
+        }),
     },
     infoContainer: {
         height: 40,
@@ -91,14 +121,18 @@ const styles = StyleSheet.create({
         color: Colors.errorText,
     },
     closeButton: {
-        height: 40,
-        width: 40,
-        paddingTop: 5,
-        paddingBottom: 5,
+        height: 60,
+        width: 50,
+        padding: 5,
         marginLeft: 'auto',
     },
+    closeIcon: {
+        color: 'white',
+    },
     fullScreen: {
-        height: Layout.window.height - 40,
+        position: 'absolute',
+        top: 0,
+        height: Layout.window.height,
         width: Layout.window.width,
     },
 });
