@@ -19,16 +19,22 @@
  */
 
 import React from 'react';
-import { View, StyleSheet, Button, Alert } from 'react-native';
-import { withNavigation } from 'react-navigation';
+import { View, StyleSheet, NetInfo, Button, Text, Alert, Platform } from 'react-native';
+import { SafeAreaView, withNavigation } from 'react-navigation';
+import Colors from '../constants/Colors';
 import LocalDatabase from '../lib/LocalDatabase';
 import AttendeesList from '../components/AttendeesList';
+import { Icon } from 'expo';
 
 class CheckinScreen extends React.Component {
-    database = null;
-
     static navigationOptions = {
         title: 'Guest Check-in',
+    };
+
+    database = null;
+
+    state = {
+        network: null,
     };
 
     componentWillMount() {
@@ -45,14 +51,33 @@ class CheckinScreen extends React.Component {
                     { text: 'OK', onPress: () => { parent.props.navigation.navigate('Error') } }
                 ], { cancelable: false });
             });
+        NetInfo.addEventListener('connectionChange', connection => {
+            console.log('Detected network change. New connection type: ' + connection.type);
+            this.setState({
+                network: connection.type,
+            });
+        });
     }
 
     render() {
         return (
-            <View style={ styles.container }>
+            <SafeAreaView style={ styles.container }>
+                { this.state.network === 'none' && (
+                    <View style={ styles.offlineContainer }>
+                        <Icon.Ionicons
+                            name="error"
+                            size={ 40 }
+                            style={ styles.offlineIcon }
+                        />
+                        <Text style={ styles.offlineText }>
+                            The device is currently offline. Any new attendees will not show up until the device can
+                            connect to the internet.
+                        </Text>
+                    </View>
+                ) }
                 <Button style={ styles.scanButton } onPress={ this._openScanner } title="Scan Ticket" />
                 <AttendeesList />
-            </View>
+            </SafeAreaView>
         );
     }
 
@@ -66,6 +91,17 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 15,
         backgroundColor: '#fff',
+    },
+    offlineContainer: {
+        padding: 15,
+        backgroundColor: Colors.errorBackground
+    },
+    offlineIcon: {
+        color: Colors.errorText,
+    },
+    offlineText: {
+        fontSize: 14,
+        color: Colors.errorText,
     },
     scanButton: {
         height: 60,

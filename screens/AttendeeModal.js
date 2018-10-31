@@ -45,19 +45,18 @@ class AttendeeModal extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingVertical: 15,
+        paddingTop: 25,
         paddingHorizontal: 10,
         backgroundColor: '#fff',
     },
     attendeeName: {
+        textAlign: 'center',
         fontSize: 22,
     },
     attendeeTicket: {
+        textAlign: 'center',
         fontSize: 18,
     },
-    attendeeStatus: {
-        fontSize: 20,
-    }
 });
 
 export default withNavigation(AttendeeModal)

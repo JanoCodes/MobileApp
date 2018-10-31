@@ -21,10 +21,12 @@
 import React from 'react';
 import {
     Platform,
+    NetInfo,
     View,
     FlatList,
     StyleSheet,
     Text,
+    TextInput,
     TouchableHighlight,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
@@ -45,19 +47,24 @@ class AttendeesList extends React.Component {
         this._syncAttendees()
             .then(() => {
                 console.log('Attendees list is ready.');
-            })
+            });
     }
 
     async _syncAttendees() {
         let parent = this;
+
+        let connection = await NetInfo.getConnectionInfo();
+
         let database = new LocalDatabase();
 
-        let status = await ApiServer.syncAttendees(database, progress => this.setState({ progress: progress }))
-            .catch(error => {
-                console.error('Unable to retrieve new attendees from remote server: ' + error.message);
-            });
-        if (status) {
-            console.log('Successfully synchronised list of attendees with remote server.')
+        if (connection.type !== 'none') {
+            let status = await ApiServer.syncAttendees(database, progress => this.setState({ progress: progress }))
+                .catch(error => {
+                    console.error('Unable to retrieve new attendees from remote server: ' + error.message);
+                });
+            if (status) {
+                console.log('Successfully synchronised list of attendees with remote server.')
+            }
         }
 
         let results = await database.getAttendees()
@@ -74,6 +81,21 @@ class AttendeesList extends React.Component {
 
     _onPressAttendee(attendee) {
         this.props.navigation.navigate('Attendee', { attendee: attendee });
+    }
+
+    async _onSearch(string) {
+        let parent = this;
+        let database = new LocalDatabase();
+
+        let results = await database.searchAttendees(string)
+            .catch(error => {
+                parent.props.navigation.navigate('Error', { error: 'Unable to fetch attendees from local database.' });
+            });
+
+        this.setState({
+            isLoading: false,
+            attendees: results.rows._array,
+        });
     }
 
     render() {
@@ -98,6 +120,7 @@ class AttendeesList extends React.Component {
                                 name={Platform.OS === 'ios' ? 'ios-search' : 'md-search'}
                                 size={ 20 }
                             />
+                            <TextInput style={ styles.searchBox } onChangeText={ this._onSearch } keyboardType="default "/>
                         </View>
                         <FlatList
                             ItemSeparatorComponent={ Platform.OS !== 'android' && (({ highlighted }) => (
@@ -157,10 +180,21 @@ const styles = StyleSheet.create({
         marginHorizontal: 'auto',
     },
     searchContainer: {
+        position: 'relative',
         paddingVertical: 15,
         paddingHorizontal: 15,
         borderBottomWidth: .7,
         borderBottomColor: 'rgba(96,100,109, .3)',
+    },
+    searchBox: {
+        position: 'absolute',
+        top: 0,
+        left: 40,
+        width: Layout.window.width - 40,
+        height: 50,
+        fontSize: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
     },
     attendeeContainer: {
         position: 'relative',
