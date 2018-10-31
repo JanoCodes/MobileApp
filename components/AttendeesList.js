@@ -43,6 +43,17 @@ class AttendeesList extends React.Component {
         progress: 0,
     };
 
+    debounce(func, delay) {
+        let inDebounce;
+        const context = this;
+
+        return function() {
+            const args = arguments;
+            clearTimeout(inDebounce);
+            inDebounce = setTimeout(() => func.apply(context, args), delay);
+        }
+    }
+
     componentWillMount() {
         this._syncAttendees()
             .then(() => {
@@ -83,19 +94,24 @@ class AttendeesList extends React.Component {
         this.props.navigation.navigate('Attendee', { attendee: attendee });
     }
 
-    async _onSearch(string) {
+    _onSearch(string) {
         let parent = this;
+
+        console.log('Searching for attendee matching the string: ' + string);
+
         let database = new LocalDatabase();
+        database.searchAttendees(string)
+            .then(results => {
+                console.log(results);
 
-        let results = await database.searchAttendees(string)
-            .catch(error => {
-                parent.props.navigation.navigate('Error', { error: 'Unable to fetch attendees from local database.' });
+                console.log('Search found ' + results.rows.length + ' results.');
+                parent.setState({
+                    attendees: results.rows._array,
+                });
+            }, error => {
+                console.log('Failed to search attendees. ' + error.message);
+                parent.props.navigation.navigate('Error', { error: 'Unable to search attendees from local database.' });
             });
-
-        this.setState({
-            isLoading: false,
-            attendees: results.rows._array,
-        });
     }
 
     render() {
@@ -120,7 +136,7 @@ class AttendeesList extends React.Component {
                                 name={Platform.OS === 'ios' ? 'ios-search' : 'md-search'}
                                 size={ 20 }
                             />
-                            <TextInput style={ styles.searchBox } onChangeText={ this._onSearch } keyboardType="default "/>
+                            <TextInput style={ styles.searchBox } onChangeText={ this.debounce(this._onSearch, 250) } keyboardType="default" />
                         </View>
                         <FlatList
                             ItemSeparatorComponent={ Platform.OS !== 'android' && (({ highlighted }) => (
