@@ -65,7 +65,7 @@ class ScannerModal extends React.Component {
         )
     }
 
-    _handleScanned = (type, data) => {
+    _handleScanned = ({ type, data }) => {
         let database = new LocalDatabase();
         database.getAttendeeByUuid(data)
             .then(response => {
