@@ -1,8 +1,8 @@
-<p style="text-align:center;"><img src="https://raw.githubusercontent.com/jano-may-ball/ticketing/master/logo.png" height="75" alt="Jano"></p>
-
-### Mobile Companion App
+<img src="https://raw.githubusercontent.com/jano-may-ball/ticketing/master/logo.png" height="75" alt="Jano" />
 
 [![Licensed under GNU GPL v3.0](https://img.shields.io/badge/license-GNU%20GPL%20v3.0-blue.svg)](https://github.com/jano-may-ball/ticketing/blob/master/README.md)
+
+# Mobile Companion App
 
 Copyright &copy; Andrew Ying and [other contributors](https://github.com/jano-may-ball/ticketing/graphs/contributors) 
 2016-2018.

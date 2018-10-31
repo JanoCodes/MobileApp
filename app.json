@@ -1,11 +1,15 @@
 {
   "expo": {
     "name": "Jano Ticketing",
-    "description": "Compainion app to the Jano Ticketing System.",
+    "description": "Companion app to the Jano Ticketing System.",
     "slug": "jano-ticketing",
-    "privacy": "public",
+    "privacy": "unlisted",
     "sdkVersion": "30.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "githubUrl": "https://github.com/jano-may-ball/mobile-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -21,10 +25,17 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "uk.co.janoticketing.mobile",
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets."
       }
+    },
+    "android": {
+      "package": "uk.co.janoticketing.mobile"
+    },
+    "androidStatusBar": {
+      "barStyle": "dark-content"
     }
   }
 }
