@@ -19,11 +19,33 @@
  */
 
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { SplashScreen } from 'expo';
+import { Platform, StatusBar, StyleSheet, View, Text } from 'react-native';
+import { SplashScreen, DangerZone } from 'expo';
+import { IntlProvider, addLocaleData } from 'react-intl';
 import AppNavigator from './navigation/AppNavigator';
 
 export default class App extends React.Component {
+    state = {
+        lang: 'en',
+        messages: null,
+    };
+
+    async componentWillMount() {
+        let parent = this;
+        let languages = DangerZone.Localization.getPreferredLocalesAsync();
+
+        for (let i = 0; i < languages.length; i++) {
+            import('./langs/' + languages[i])
+                .then(messages => {
+                    parent.setState({
+                        lang: languages[i],
+                        messages: messages,
+                    });
+                    break;
+                }, error => {});
+        }
+    }
+
     constructor(props) {
         super(props);
         SplashScreen.preventAutoHide();
@@ -31,10 +53,12 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <View style={ styles.container }>
-                {Platform.OS === 'ios' && <StatusBar barStyle="default"/>}
-                <AppNavigator/>
-            </View>
+            <IntlProvider locale={ this.state.lang } messages={ this.state.messages } textComponent={ Text }>
+                <View style={ styles.container }>
+                    {Platform.OS === 'ios' && <StatusBar barStyle="default"/>}
+                    <AppNavigator/>
+                </View>
+            </IntlProvider>
         );
     }
 }
