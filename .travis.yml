@@ -1,0 +1,23 @@
+language: node_js
+node_js:
+- node
+- lts/*
+cache:
+  directories:
+  - ~/.npm
+before_script:
+- npm install -g npm@latest
+- npm install -g expo-cli
+script:
+- npm ci
+- npm run export
+deploy:
+  provider: pages
+  local-dir: dist
+  name: CI Deploy Bot
+  email: bot@janoticketing.co.uk
+  github-token: $GITHUB_TOKEN
+  keep-history: true
+  fqdn: app.janoticketing.co.uk
+  on:
+    branch: master

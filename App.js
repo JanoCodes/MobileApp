@@ -22,6 +22,7 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View, Text } from 'react-native';
 import { SplashScreen, DangerZone } from 'expo';
 import { IntlProvider, addLocaleData } from 'react-intl';
+import Languages from './constants/Languages';
 import AppNavigator from './navigation/AppNavigator';
 
 export default class App extends React.Component {
@@ -35,14 +36,15 @@ export default class App extends React.Component {
         let languages = DangerZone.Localization.getPreferredLocalesAsync();
 
         for (let i = 0; i < languages.length; i++) {
-            import('./langs/' + languages[i])
-                .then(messages => {
-                    parent.setState({
-                        lang: languages[i],
-                        messages: messages,
-                    });
-                    break;
-                }, error => {});
+            let success = false;
+
+            if (Languages.hasOwnProperty(languages[i])) {
+                parent.setState({
+                    lang: languages[i],
+                    messages: Languages[languages[i]],
+                });
+                break;
+            }
         }
     }
 
