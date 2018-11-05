@@ -4,7 +4,7 @@
     "description": "Companion app to the Jano Ticketing System.",
     "slug": "jano-ticketing",
     "privacy": "unlisted",
-    "sdkVersion": "30.0.0",
+    "sdkVersion": "31.0.0",
     "platforms": [
       "ios",
       "android"
@@ -18,6 +18,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "scheme": "jano",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
