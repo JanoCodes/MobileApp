@@ -1,7 +1,6 @@
 language: node_js
 node_js:
-- node
-- lts/*
+- "8.12"
 cache:
   directories:
   - ~/.npm
@@ -10,7 +9,8 @@ before_script:
 - npm install -g expo-cli
 script:
 - npm ci
-- npm run export
+- expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD --non-interactive
+- expo export --public-url https://app.janoticketing.co.uk
 deploy:
   provider: pages
   local-dir: dist
