@@ -17,6 +17,7 @@ deploy:
   name: Jano Bot
   email: bot@janoticketing.co.uk
   github-token: $GITHUB_TOKEN
+  skip-cleanup: true
   keep-history: true
   fqdn: app.janoticketing.co.uk
   on:
