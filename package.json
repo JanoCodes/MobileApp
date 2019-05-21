@@ -24,6 +24,6 @@
     "urijs": "^1.19.1"
   },
   "devDependencies": {
-    "jest-expo": "31.0.0"
+    "jest-expo": "32.0.1"
   }
 }
