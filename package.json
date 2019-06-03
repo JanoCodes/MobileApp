@@ -13,7 +13,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@expo/samples": "2.1.1",
+    "@expo/samples": "3.0.1",
     "expo": "^31.0.5",
     "react": "16.5.0",
     "react-intl": "^2.8.0",
