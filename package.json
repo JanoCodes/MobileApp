@@ -20,7 +20,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
     "react-native-event-listeners": "^1.0.3",
     "react-native-iphone-x-helper": "^1.2.0",
-    "react-navigation": "^2.18.3",
+    "react-navigation": "^4.0.3",
     "urijs": "^1.19.1"
   },
   "devDependencies": {
