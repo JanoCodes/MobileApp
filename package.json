@@ -21,7 +21,7 @@
     "react-native-event-listeners": "^1.0.3",
     "react-native-iphone-x-helper": "^1.2.0",
     "react-navigation": "^2.18.3",
-    "urijs": "^1.19.1"
+    "urijs": "^1.19.4"
   },
   "devDependencies": {
     "jest-expo": "31.0.0"
