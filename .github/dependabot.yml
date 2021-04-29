@@ -1,0 +1,51 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    timezone: Europe/London
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: react-intl
+    versions:
+    - 5.10.19
+    - 5.11.0
+    - 5.12.0
+    - 5.12.1
+    - 5.12.2
+    - 5.12.3
+    - 5.12.5
+    - 5.13.0
+    - 5.13.1
+    - 5.13.2
+    - 5.13.3
+    - 5.13.4
+    - 5.13.5
+    - 5.14.0
+    - 5.15.3
+    - 5.15.5
+    - 5.15.7
+    - 5.15.8
+    - 5.16.0
+    - 5.17.0
+    - 5.17.1
+  - dependency-name: expo
+    versions:
+    - 40.0.1
+    - 41.0.0
+  - dependency-name: urijs
+    versions:
+    - 1.19.4
+  - dependency-name: react-navigation
+    versions:
+    - 4.4.3
+  - dependency-name: lodash
+    versions:
+    - 4.17.20
+  - dependency-name: handlebars
+    versions:
+    - 4.7.6
+  - dependency-name: jest-expo
+    versions:
+    - 34.0.1
